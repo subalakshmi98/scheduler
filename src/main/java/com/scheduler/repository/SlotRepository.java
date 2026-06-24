@@ -33,4 +33,14 @@ public interface SlotRepository extends JpaRepository<Slot, UUID> {
     """)
     boolean existsOverlappingSlotExcludingCurrent(String email, String slotNumber,
                                                   LocalDateTime startTime, LocalDateTime endTime);
+
+    @Query("""
+        select s from Slot s
+        where s.owner.email = :email
+        and s.startTime >= :from
+        and s.endTime <= :to
+        order by s.startTime
+    """)
+    List<Slot> findAvailability(String email, LocalDateTime from, LocalDateTime to
+    );
 }
