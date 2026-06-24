@@ -6,6 +6,7 @@ import com.scheduler.dto.request.UpdateSlotStatusRequest;
 import com.scheduler.dto.response.SlotResponse;
 import com.scheduler.dto.response.SlotAvailabilityResponse;
 import com.scheduler.service.SlotService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class SlotController {
 
     @PostMapping
     public SlotResponse createSlot(@PathVariable String email,
-                                   @RequestBody CreateSlotRequest request) {
+                                   @Valid @RequestBody CreateSlotRequest request) {
 
         return slotService.createSlot(email, request);
     }
@@ -32,7 +33,7 @@ public class SlotController {
     @PutMapping("/{slotNumber}")
     public SlotResponse updateSlot(@PathVariable String email,
                                    @PathVariable String slotNumber,
-                                   @RequestBody UpdateSlotRequest request) {
+                                   @Valid @RequestBody UpdateSlotRequest request) {
 
         return slotService.updateSlot(email, slotNumber, request);
     }
@@ -44,7 +45,7 @@ public class SlotController {
 
     @PatchMapping("/{slotNumber}")
     public SlotResponse updateStatus(@PathVariable String email, @PathVariable String slotNumber,
-                                     @RequestBody UpdateSlotStatusRequest request) {
+                                     @Valid @RequestBody UpdateSlotStatusRequest request) {
 
         return slotService.updateStatus(email, slotNumber, request);
     }

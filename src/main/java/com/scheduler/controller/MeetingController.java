@@ -3,6 +3,7 @@ package com.scheduler.controller;
 import com.scheduler.dto.request.CreateMeetingRequest;
 import com.scheduler.dto.response.MeetingResponse;
 import com.scheduler.service.MeetingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class MeetingController {
 
     @PostMapping("/meeting")
     public MeetingResponse createMeeting(@PathVariable String email, @PathVariable String slotNumber,
-                                         @RequestBody CreateMeetingRequest request) {
+                                         @Valid @RequestBody CreateMeetingRequest request) {
 
         return meetingService.createMeeting(email, slotNumber, request);
     }
