@@ -3,6 +3,7 @@ package com.scheduler.service.impl;
 import com.scheduler.constants.SlotStatus;
 import com.scheduler.dto.request.CreateSlotRequest;
 import com.scheduler.dto.request.UpdateSlotRequest;
+import com.scheduler.dto.request.UpdateSlotStatusRequest;
 import com.scheduler.dto.response.SlotResponse;
 import com.scheduler.dto.response.SlotAvailabilityResponse;
 import com.scheduler.model.Slot;
@@ -125,5 +126,25 @@ public class SlotServiceImpl implements SlotService {
         }
 
         slotRepository.delete(slot);
+    }
+
+    @Override
+    public SlotResponse updateStatus(String email, String slotNumber, UpdateSlotStatusRequest request) {
+
+        Slot slot = slotRepository.findByOwnerEmailAndSlotNumber(email, slotNumber)
+                .orElseThrow(() -> new RuntimeException("Slot not found"));
+
+        if (slot.getStatus() == SlotStatus.BOOKED) {
+            throw new RuntimeException("Booked slot cannot be modified");
+        }
+
+        slot.setStatus(request.status());
+
+        return new SlotResponse(
+                slot.getSlotNumber(),
+                slot.getStartTime(),
+                slot.getEndTime(),
+                slot.getStatus()
+        );
     }
 }

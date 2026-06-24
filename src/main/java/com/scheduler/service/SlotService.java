@@ -2,6 +2,7 @@ package com.scheduler.service;
 
 import com.scheduler.dto.request.CreateSlotRequest;
 import com.scheduler.dto.request.UpdateSlotRequest;
+import com.scheduler.dto.request.UpdateSlotStatusRequest;
 import com.scheduler.dto.response.SlotResponse;
 import com.scheduler.dto.response.SlotAvailabilityResponse;
 
@@ -12,4 +13,5 @@ public interface SlotService {
     List<SlotAvailabilityResponse> getSlots(String email);
     SlotResponse updateSlot(String email, String slotNumber, UpdateSlotRequest request);
     void deleteSlot(String email, String slotNumber);
+    SlotResponse updateStatus(String email, String slotNumber, UpdateSlotStatusRequest request);
 }

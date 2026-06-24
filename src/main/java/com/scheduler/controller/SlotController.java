@@ -2,6 +2,7 @@ package com.scheduler.controller;
 
 import com.scheduler.dto.request.CreateSlotRequest;
 import com.scheduler.dto.request.UpdateSlotRequest;
+import com.scheduler.dto.request.UpdateSlotStatusRequest;
 import com.scheduler.dto.response.SlotResponse;
 import com.scheduler.dto.response.SlotAvailabilityResponse;
 import com.scheduler.service.SlotService;
@@ -39,5 +40,12 @@ public class SlotController {
     @DeleteMapping("/{slotNumber}")
     public void deleteSlot(@PathVariable String email, @PathVariable String slotNumber) {
         slotService.deleteSlot(email, slotNumber);
+    }
+
+    @PatchMapping("/{slotNumber}")
+    public SlotResponse updateStatus(@PathVariable String email, @PathVariable String slotNumber,
+                                     @RequestBody UpdateSlotStatusRequest request) {
+
+        return slotService.updateStatus(email, slotNumber, request);
     }
 }
