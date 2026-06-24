@@ -35,4 +35,9 @@ public class SlotController {
 
         return slotService.updateSlot(email, slotNumber, request);
     }
+
+    @DeleteMapping("/{slotNumber}")
+    public void deleteSlot(@PathVariable String email, @PathVariable String slotNumber) {
+        slotService.deleteSlot(email, slotNumber);
+    }
 }

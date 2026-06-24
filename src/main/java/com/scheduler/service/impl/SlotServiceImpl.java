@@ -113,4 +113,17 @@ public class SlotServiceImpl implements SlotService {
                 slot.getStatus()
         );
     }
+
+    @Override
+    public void deleteSlot(String email, String slotNumber) {
+
+        Slot slot = slotRepository.findByOwnerEmailAndSlotNumber(email, slotNumber)
+                .orElseThrow(() -> new RuntimeException("Slot not found"));
+
+        if (slot.getStatus() == SlotStatus.BOOKED) {
+            throw new RuntimeException("Booked slot cannot be deleted");
+        }
+
+        slotRepository.delete(slot);
+    }
 }

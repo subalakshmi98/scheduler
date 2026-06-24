@@ -11,4 +11,5 @@ public interface SlotService {
     SlotResponse createSlot(String email, CreateSlotRequest request);
     List<SlotAvailabilityResponse> getSlots(String email);
     SlotResponse updateSlot(String email, String slotNumber, UpdateSlotRequest request);
+    void deleteSlot(String email, String slotNumber);
 }
