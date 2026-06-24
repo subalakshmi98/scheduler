@@ -8,6 +8,8 @@ import com.scheduler.dto.response.SlotAvailabilityResponse;
 import com.scheduler.service.SlotService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,34 +21,39 @@ public class SlotController {
     private final SlotService slotService;
 
     @PostMapping
-    public SlotResponse createSlot(@PathVariable String email,
-                                   @Valid @RequestBody CreateSlotRequest request) {
+    public ResponseEntity<SlotResponse> createSlot(@PathVariable String email,
+                                                  @Valid @RequestBody CreateSlotRequest request) {
 
-        return slotService.createSlot(email, request);
+        SlotResponse response = slotService.createSlot(email, request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping
-    public List<SlotAvailabilityResponse> getSlots(@PathVariable String email) {
-        return slotService.getSlots(email);
+    public ResponseEntity<List<SlotAvailabilityResponse>> getSlots(@PathVariable String email) {
+        List<SlotAvailabilityResponse> response = slotService.getSlots(email);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @PutMapping("/{slotNumber}")
-    public SlotResponse updateSlot(@PathVariable String email,
+    public ResponseEntity<SlotResponse> updateSlot(@PathVariable String email,
                                    @PathVariable String slotNumber,
                                    @Valid @RequestBody UpdateSlotRequest request) {
 
-        return slotService.updateSlot(email, slotNumber, request);
+        SlotResponse response = slotService.updateSlot(email, slotNumber, request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @DeleteMapping("/{slotNumber}")
-    public void deleteSlot(@PathVariable String email, @PathVariable String slotNumber) {
+    public ResponseEntity<String> deleteSlot(@PathVariable String email, @PathVariable String slotNumber) {
         slotService.deleteSlot(email, slotNumber);
+        return ResponseEntity.status(HttpStatus.OK).body("Slot Deleted");
     }
 
     @PatchMapping("/{slotNumber}")
-    public SlotResponse updateStatus(@PathVariable String email, @PathVariable String slotNumber,
+    public ResponseEntity<SlotResponse> updateStatus(@PathVariable String email, @PathVariable String slotNumber,
                                      @Valid @RequestBody UpdateSlotStatusRequest request) {
 
-        return slotService.updateStatus(email, slotNumber, request);
+        SlotResponse response = slotService.updateStatus(email, slotNumber, request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

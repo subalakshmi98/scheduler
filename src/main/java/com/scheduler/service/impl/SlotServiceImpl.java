@@ -68,6 +68,9 @@ public class SlotServiceImpl implements SlotService {
     @Transactional(readOnly = true)
     public List<SlotAvailabilityResponse> getSlots(String email) {
 
+        userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email));
+
         List<Slot> slots = slotRepository.findByOwnerEmailOrderByStartTimeAsc(email);
 
         return slots.stream()
@@ -89,7 +92,7 @@ public class SlotServiceImpl implements SlotService {
                 .orElseThrow(() -> new SlotNotFoundException(slotNumber));
 
         if (!request.endTime().isAfter(request.startTime())) {
-            throw new InvalidSlotTimeException();
+            throw new InvalidTimeSlotException();
         }
 
         if (slot.getStatus() == SlotStatus.BOOKED) {

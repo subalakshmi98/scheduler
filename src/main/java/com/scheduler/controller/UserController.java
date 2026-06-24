@@ -6,6 +6,8 @@ import com.scheduler.dto.response.UserAvailabilityResponse;
 import com.scheduler.service.impl.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -18,13 +20,15 @@ public class UserController {
     private final UserServiceImpl userService;
 
     @PostMapping
-    public CreateUserResponse create(@RequestBody @Valid CreateUserRequest request) {
-        return userService.create(request);
+    public ResponseEntity<CreateUserResponse> create(@RequestBody @Valid CreateUserRequest request) {
+        CreateUserResponse response = userService.create(request);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/{email}/availability")
-    public UserAvailabilityResponse getAvailability(@PathVariable String email,
+    public ResponseEntity<UserAvailabilityResponse> getAvailability(@PathVariable String email,
                                                     @RequestParam LocalDateTime from, @RequestParam LocalDateTime to) {
-        return userService.getAvailability(email, from, to);
+        UserAvailabilityResponse response = userService.getAvailability(email, from, to);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
