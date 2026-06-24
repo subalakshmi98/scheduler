@@ -19,6 +19,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final CalendarRepository calendarRepository;
 
+    @Override
     public CreateUserResponse create(CreateUserRequest request) {
 
         if (userRepository.existsByEmail(request.email())) {
