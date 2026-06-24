@@ -4,7 +4,7 @@ import com.scheduler.constants.SlotStatus;
 
 import java.time.LocalDateTime;
 
-public record CreateSlotResponse(
+public record SlotResponse(
         String slotNumber,
         LocalDateTime startTime,
         LocalDateTime endTime,

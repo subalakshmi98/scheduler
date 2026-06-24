@@ -13,7 +13,6 @@ import java.util.UUID;
 @Repository
 public interface SlotRepository extends JpaRepository<Slot, UUID> {
 
-    Optional<Slot> findBySlotNumber(String slotNumber);
     @Query("""
         select count(s) > 0 from Slot s
         where s.owner.email = :email
@@ -22,4 +21,15 @@ public interface SlotRepository extends JpaRepository<Slot, UUID> {
     """)
     boolean existsOverlappingSlot(String email, LocalDateTime startTime, LocalDateTime endTime);
     List<Slot> findByOwnerEmailOrderByStartTimeAsc(String email);
+
+    Optional<Slot> findBySlotNumber(String slotNumber);
+    @Query("""
+        select count(s) > 0 from Slot s
+        where s.owner.email = :email
+        and s.slotNumber <> :slotNumber
+        and s.startTime < :endTime
+        and s.endTime > :startTime
+    """)
+    boolean existsOverlappingSlotExcludingCurrent(String slotNumber, String email,
+                                                  LocalDateTime startTime, LocalDateTime endTime);
 }

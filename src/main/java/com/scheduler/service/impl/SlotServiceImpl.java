@@ -2,7 +2,8 @@ package com.scheduler.service.impl;
 
 import com.scheduler.constants.SlotStatus;
 import com.scheduler.dto.request.CreateSlotRequest;
-import com.scheduler.dto.response.CreateSlotResponse;
+import com.scheduler.dto.request.UpdateSlotRequest;
+import com.scheduler.dto.response.SlotResponse;
 import com.scheduler.dto.response.SlotAvailabilityResponse;
 import com.scheduler.model.Slot;
 import com.scheduler.model.User;
@@ -24,7 +25,7 @@ public class SlotServiceImpl implements SlotService {
     private final UserRepository userRepository;
 
     @Override
-    public CreateSlotResponse createSlot(String email, CreateSlotRequest request) {
+    public SlotResponse createSlot(String email, CreateSlotRequest request) {
 
         User owner = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -54,7 +55,7 @@ public class SlotServiceImpl implements SlotService {
                 .build()
         );
 
-        return new CreateSlotResponse(
+        return new SlotResponse(
                 slot.getSlotNumber(),
                 slot.getStartTime(),
                 slot.getEndTime(),
@@ -76,5 +77,41 @@ public class SlotServiceImpl implements SlotService {
                         slot.getStatus()
                         )
                 ).toList();
+    }
+
+    @Override
+    public SlotResponse updateSlot(String slotNumber, UpdateSlotRequest request) {
+
+        Slot slot = slotRepository.findBySlotNumber(slotNumber)
+                .orElseThrow(() -> new RuntimeException("Slot not found"));
+
+        if (!request.endTime().isAfter(request.startTime())) {
+            throw new RuntimeException("End time must be after start time");
+        }
+
+        if (slot.getStatus() == SlotStatus.BOOKED) {
+            throw new RuntimeException("Booked slot cannot be modified");
+        }
+
+        boolean overlap = slotRepository.existsOverlappingSlotExcludingCurrent(
+                slot.getOwner().getEmail(),
+                slotNumber,
+                request.startTime(),
+                request.endTime()
+        );
+
+        if (overlap) {
+            throw new RuntimeException("Slot overlaps existing slot");
+        }
+
+        slot.setStartTime(request.startTime());
+        slot.setEndTime(request.endTime());
+
+        return new SlotResponse(
+                slot.getSlotNumber(),
+                slot.getStartTime(),
+                slot.getEndTime(),
+                slot.getStatus()
+        );
     }
 }

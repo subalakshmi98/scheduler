@@ -1,7 +1,8 @@
 package com.scheduler.controller;
 
 import com.scheduler.dto.request.CreateSlotRequest;
-import com.scheduler.dto.response.CreateSlotResponse;
+import com.scheduler.dto.request.UpdateSlotRequest;
+import com.scheduler.dto.response.SlotResponse;
 import com.scheduler.dto.response.SlotAvailabilityResponse;
 import com.scheduler.service.SlotService;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,8 @@ public class SlotController {
     private final SlotService slotService;
 
     @PostMapping
-    public CreateSlotResponse createSlot(@PathVariable String email,
-                                         @RequestBody CreateSlotRequest request) {
+    public SlotResponse createSlot(@PathVariable String email,
+                                   @RequestBody CreateSlotRequest request) {
 
         return slotService.createSlot(email, request);
     }
@@ -25,5 +26,12 @@ public class SlotController {
     @GetMapping
     public List<SlotAvailabilityResponse> getSlots(@PathVariable String email) {
         return slotService.getSlots(email);
+    }
+
+    @PutMapping("/{slotNumber}")
+    public SlotResponse updateSlot(@PathVariable String slotNumber,
+                                   @RequestBody UpdateSlotRequest request) {
+
+        return slotService.updateSlot(slotNumber, request);
     }
 }
