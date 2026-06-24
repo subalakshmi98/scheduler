@@ -29,9 +29,10 @@ public class SlotController {
     }
 
     @PutMapping("/{slotNumber}")
-    public SlotResponse updateSlot(@PathVariable String slotNumber,
+    public SlotResponse updateSlot(@PathVariable String email,
+                                   @PathVariable String slotNumber,
                                    @RequestBody UpdateSlotRequest request) {
 
-        return slotService.updateSlot(slotNumber, request);
+        return slotService.updateSlot(email, slotNumber, request);
     }
 }

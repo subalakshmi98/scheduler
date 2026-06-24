@@ -22,7 +22,8 @@ public interface SlotRepository extends JpaRepository<Slot, UUID> {
     boolean existsOverlappingSlot(String email, LocalDateTime startTime, LocalDateTime endTime);
     List<Slot> findByOwnerEmailOrderByStartTimeAsc(String email);
 
-    Optional<Slot> findBySlotNumber(String slotNumber);
+    long countByOwnerEmail(String email);
+    Optional<Slot> findByOwnerEmailAndSlotNumber(String email, String slotNumber);
     @Query("""
         select count(s) > 0 from Slot s
         where s.owner.email = :email
@@ -30,6 +31,6 @@ public interface SlotRepository extends JpaRepository<Slot, UUID> {
         and s.startTime < :endTime
         and s.endTime > :startTime
     """)
-    boolean existsOverlappingSlotExcludingCurrent(String slotNumber, String email,
+    boolean existsOverlappingSlotExcludingCurrent(String email, String slotNumber,
                                                   LocalDateTime startTime, LocalDateTime endTime);
 }

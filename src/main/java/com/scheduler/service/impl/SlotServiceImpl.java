@@ -44,10 +44,9 @@ public class SlotServiceImpl implements SlotService {
             throw new RuntimeException("Slot overlaps existing slot");
         }
 
-        String slotNumber = "S" + (slotRepository.count() + 1);
-
+        long nextSlotNumber = slotRepository.countByOwnerEmail(email) + 1;
         Slot slot = slotRepository.save(Slot.builder()
-                .slotNumber(slotNumber)
+                .slotNumber("S" + nextSlotNumber)
                 .owner(owner)
                 .startTime(request.startTime())
                 .endTime(request.endTime())
@@ -80,9 +79,9 @@ public class SlotServiceImpl implements SlotService {
     }
 
     @Override
-    public SlotResponse updateSlot(String slotNumber, UpdateSlotRequest request) {
+    public SlotResponse updateSlot(String email, String slotNumber, UpdateSlotRequest request) {
 
-        Slot slot = slotRepository.findBySlotNumber(slotNumber)
+        Slot slot = slotRepository.findByOwnerEmailAndSlotNumber(email, slotNumber)
                 .orElseThrow(() -> new RuntimeException("Slot not found"));
 
         if (!request.endTime().isAfter(request.startTime())) {
@@ -94,8 +93,8 @@ public class SlotServiceImpl implements SlotService {
         }
 
         boolean overlap = slotRepository.existsOverlappingSlotExcludingCurrent(
-                slot.getOwner().getEmail(),
                 slotNumber,
+                slot.getOwner().getEmail(),
                 request.startTime(),
                 request.endTime()
         );

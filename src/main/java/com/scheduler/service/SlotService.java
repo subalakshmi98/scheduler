@@ -10,5 +10,5 @@ import java.util.List;
 public interface SlotService {
     SlotResponse createSlot(String email, CreateSlotRequest request);
     List<SlotAvailabilityResponse> getSlots(String email);
-    SlotResponse updateSlot(String slotNumber, UpdateSlotRequest request);
+    SlotResponse updateSlot(String email, String slotNumber, UpdateSlotRequest request);
 }

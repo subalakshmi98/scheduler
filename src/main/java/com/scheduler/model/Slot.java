@@ -20,7 +20,7 @@ public class Slot {
     @GeneratedValue
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String slotNumber;
 
     @ManyToOne(optional = false)
