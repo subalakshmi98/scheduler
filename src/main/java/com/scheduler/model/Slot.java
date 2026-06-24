@@ -34,4 +34,7 @@ public class Slot {
 
     @Enumerated(EnumType.STRING)
     private SlotStatus status;
+
+    @OneToOne(mappedBy = "slot")
+    private Meeting meeting;
 }

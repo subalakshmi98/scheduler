@@ -68,13 +68,15 @@ public class SlotServiceImpl implements SlotService {
     public List<SlotAvailabilityResponse> getSlots(String email) {
 
         List<Slot> slots = slotRepository.findByOwnerEmailOrderByStartTimeAsc(email);
+
         return slots.stream()
                 .map(slot -> new SlotAvailabilityResponse(
                         slot.getSlotNumber(),
                         slot.getId(),
                         slot.getStartTime(),
                         slot.getEndTime(),
-                        slot.getStatus()
+                        slot.getStatus(),
+                        slot.getMeeting() != null ? slot.getMeeting().getTitle() : null
                         )
                 ).toList();
     }

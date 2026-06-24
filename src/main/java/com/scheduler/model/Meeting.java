@@ -26,6 +26,7 @@ public class Meeting {
     private String description;
 
     @OneToOne(optional = false)
+    @JoinColumn(name = "slot_id")
     private Slot slot;
 
     @ManyToMany
