@@ -5,6 +5,8 @@ import com.scheduler.dto.request.CreateUserRequest;
 import com.scheduler.dto.response.CreateUserResponse;
 import com.scheduler.dto.response.SlotAvailabilityResponse;
 import com.scheduler.dto.response.UserAvailabilityResponse;
+import com.scheduler.exception.EmailAlreadyExistsException;
+import com.scheduler.exception.UserNotFoundException;
 import com.scheduler.model.Calendar;
 import com.scheduler.model.Slot;
 import com.scheduler.model.User;
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService {
     public CreateUserResponse create(CreateUserRequest request) {
 
         if (userRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Email already exists");
+            throw new EmailAlreadyExistsException(request.email());
         }
 
         User user = userRepository.save(User.builder()
@@ -59,7 +61,7 @@ public class UserServiceImpl implements UserService {
     public UserAvailabilityResponse getAvailability(String email, LocalDateTime from, LocalDateTime to) {
 
         userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(email));
 
         List<Slot> slots = slotRepository.findAvailability(email, from, to);
 

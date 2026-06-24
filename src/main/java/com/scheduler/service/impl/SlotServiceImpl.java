@@ -6,6 +6,7 @@ import com.scheduler.dto.request.UpdateSlotRequest;
 import com.scheduler.dto.request.UpdateSlotStatusRequest;
 import com.scheduler.dto.response.SlotResponse;
 import com.scheduler.dto.response.SlotAvailabilityResponse;
+import com.scheduler.exception.*;
 import com.scheduler.model.Slot;
 import com.scheduler.model.User;
 import com.scheduler.repository.SlotRepository;
@@ -29,7 +30,7 @@ public class SlotServiceImpl implements SlotService {
     public SlotResponse createSlot(String email, CreateSlotRequest request) {
 
         User owner = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(email));
 
         if (!request.endTime().isAfter(request.startTime())) {
             throw new RuntimeException("End time must be after start time");
@@ -42,7 +43,7 @@ public class SlotServiceImpl implements SlotService {
         );
 
         if (overlap) {
-            throw new RuntimeException("Slot overlaps existing slot");
+            throw new SlotOverlapException();
         }
 
         long nextSlotNumber = slotRepository.countByOwnerEmail(email) + 1;
@@ -85,14 +86,14 @@ public class SlotServiceImpl implements SlotService {
     public SlotResponse updateSlot(String email, String slotNumber, UpdateSlotRequest request) {
 
         Slot slot = slotRepository.findByOwnerEmailAndSlotNumber(email, slotNumber)
-                .orElseThrow(() -> new RuntimeException("Slot not found"));
+                .orElseThrow(() -> new SlotNotFoundException(slotNumber));
 
         if (!request.endTime().isAfter(request.startTime())) {
-            throw new RuntimeException("End time must be after start time");
+            throw new InvalidSlotTimeException();
         }
 
         if (slot.getStatus() == SlotStatus.BOOKED) {
-            throw new RuntimeException("Booked slot cannot be modified");
+            throw new MeetingCreationException("Booked slot cannot be modified");
         }
 
         boolean overlap = slotRepository.existsOverlappingSlotExcludingCurrent(
@@ -103,7 +104,7 @@ public class SlotServiceImpl implements SlotService {
         );
 
         if (overlap) {
-            throw new RuntimeException("Slot overlaps existing slot");
+            throw new SlotOverlapException();
         }
 
         slot.setStartTime(request.startTime());
@@ -121,10 +122,10 @@ public class SlotServiceImpl implements SlotService {
     public void deleteSlot(String email, String slotNumber) {
 
         Slot slot = slotRepository.findByOwnerEmailAndSlotNumber(email, slotNumber)
-                .orElseThrow(() -> new RuntimeException("Slot not found"));
+                .orElseThrow(() -> new SlotNotFoundException(slotNumber));
 
         if (slot.getStatus() == SlotStatus.BOOKED) {
-            throw new RuntimeException("Booked slot cannot be deleted");
+            throw new MeetingCreationException("Booked slot cannot be deleted");
         }
 
         slotRepository.delete(slot);
@@ -134,10 +135,10 @@ public class SlotServiceImpl implements SlotService {
     public SlotResponse updateStatus(String email, String slotNumber, UpdateSlotStatusRequest request) {
 
         Slot slot = slotRepository.findByOwnerEmailAndSlotNumber(email, slotNumber)
-                .orElseThrow(() -> new RuntimeException("Slot not found"));
+                .orElseThrow(() -> new SlotNotFoundException(slotNumber));
 
         if (slot.getStatus() == SlotStatus.BOOKED) {
-            throw new RuntimeException("Booked slot cannot be modified");
+            throw new MeetingCreationException("Booked slot cannot be modified");
         }
 
         slot.setStatus(request.status());
