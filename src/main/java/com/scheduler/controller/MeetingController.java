@@ -16,7 +16,7 @@ public class MeetingController {
 
     private final MeetingService meetingService;
 
-    @PostMapping("/meeting")
+    @PostMapping("/meetings")
     public ResponseEntity<MeetingResponse> createMeeting(@PathVariable String email, @PathVariable String slotNumber,
                                                         @Valid @RequestBody CreateMeetingRequest request) {
 
