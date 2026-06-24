@@ -3,6 +3,8 @@ package com.scheduler.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -25,4 +27,11 @@ public class Meeting {
 
     @OneToOne(optional = false)
     private Slot slot;
+
+    @ManyToMany
+    @JoinTable(name = "meeting_participants",
+            joinColumns = @JoinColumn(name = "meeting_id"),
+            inverseJoinColumns = @JoinColumn(name = "participant_id")
+    )
+    private Set<Participant> participants;
 }

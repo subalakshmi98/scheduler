@@ -2,15 +2,22 @@ package com.scheduler.service.impl;
 
 import com.scheduler.constants.SlotStatus;
 import com.scheduler.dto.request.CreateMeetingRequest;
+import com.scheduler.dto.request.ParticipantRequest;
 import com.scheduler.dto.response.MeetingResponse;
 import com.scheduler.model.Meeting;
+import com.scheduler.model.Participant;
 import com.scheduler.model.Slot;
+import com.scheduler.model.User;
 import com.scheduler.repository.MeetingRepository;
+import com.scheduler.repository.ParticipantRepository;
 import com.scheduler.repository.SlotRepository;
 import com.scheduler.service.MeetingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MeetingServiceImpl implements MeetingService {
 
     private final MeetingRepository meetingRepository;
+    private final ParticipantRepository participantRepository;
     private final SlotRepository slotRepository;
 
     @Override
@@ -34,10 +42,27 @@ public class MeetingServiceImpl implements MeetingService {
             throw new RuntimeException("Meeting title is required");
         }
 
+        Set<Participant> participants = new HashSet<>();
+
+        if (request.participants() != null) {
+            for (ParticipantRequest p : request.participants()) {
+
+                Participant participant = Participant.builder()
+                        .name(p.name())
+                        .email(p.email())
+                        .build();
+
+                participants.add(participant);
+            }
+
+            participantRepository.saveAll(participants);
+        }
+
         Meeting meeting = meetingRepository.save(Meeting.builder()
                 .title(request.title())
                 .description(request.description())
                 .slot(slot)
+                .participants(participants)
                 .build()
         );
 
@@ -46,7 +71,10 @@ public class MeetingServiceImpl implements MeetingService {
         return new MeetingResponse(
                 meeting.getTitle(),
                 meeting.getDescription(),
-                slot.getSlotNumber()
+                slot.getSlotNumber(),
+                participants.stream()
+                        .map(Participant::getEmail)
+                        .toList()
         );
     }
 }
