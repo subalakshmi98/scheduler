@@ -1,0 +1,12 @@
+services:
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: meeting-scheduler
+
+    ports:
+      - "8080:8080"
+
+    restart: unless-stopped

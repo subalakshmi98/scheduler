@@ -95,8 +95,9 @@ Metrics:
 
 # Running with Docker
 
-- Build Docker Image: docker build -t scheduler .
-- Run Container: docker run -p 8080:8080 scheduler
+- Build and start Application: docker compose up --build
+- Application starts on: http://localhost:8080
+- Stop the application: docker compose down
 
 # Assumptions
 
