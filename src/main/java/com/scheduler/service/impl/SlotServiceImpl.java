@@ -100,8 +100,8 @@ public class SlotServiceImpl implements SlotService {
         }
 
         boolean overlap = slotRepository.existsOverlappingSlotExcludingCurrent(
-                slotNumber,
                 slot.getOwner().getEmail(),
+                slotNumber,
                 request.startTime(),
                 request.endTime()
         );
