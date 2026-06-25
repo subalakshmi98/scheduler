@@ -25,14 +25,14 @@ class MeetingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                  "name":"Alex",
-                                  "email":"alex@test.com"
+                                  "name":"Ben",
+                                  "email":"ben@test.com"
                                 }
                                 """)
         );
 
         mockMvc.perform(
-                post("/v1/users/alex@test.com/slots")
+                post("/v1/users/ben@test.com/slots")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -43,7 +43,7 @@ class MeetingControllerTest {
         );
 
         mockMvc.perform(
-                        post("/v1/users/alex@test.com/slots/S1/meetings")
+                        post("/v1/users/ben@test.com/slots/S1/meetings")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
@@ -58,7 +58,7 @@ class MeetingControllerTest {
                         .value("Technical Interview"));
 
         mockMvc.perform(
-                        get("/v1/users/alex@test.com/slots")
+                        get("/v1/users/ben@test.com/slots")
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].status")

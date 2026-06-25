@@ -1,13 +1,16 @@
 package com.scheduler.integrationTest;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -25,14 +28,15 @@ class SlotControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                  "name":"Alex",
-                                  "email":"alex@test.com"
+                                  "name":"John",
+                                  "email":"john@test.com"
                                 }
                                 """)
-        );
+        ).andDo(print())
+                .andExpect(status().isOk());
 
         mockMvc.perform(
-                        post("/v1/users/alex@test.com/slots")
+                        post("/v1/users/john@test.com/slots")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("""
                                         {
